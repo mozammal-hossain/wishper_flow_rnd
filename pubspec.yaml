@@ -35,6 +35,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  whisper_ggml: ^2.6.0
+  record: ^7.1.1
+  flutter_tts: ^4.2.5
+  path_provider: ^2.1.6
+  permission_handler: ^13.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
