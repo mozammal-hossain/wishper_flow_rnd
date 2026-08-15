@@ -6,8 +6,8 @@ plugins {
 
 android {
     namespace = "com.example.wishper_flow_rnd"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 37
+    ndkVersion = "29.0.13113456"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

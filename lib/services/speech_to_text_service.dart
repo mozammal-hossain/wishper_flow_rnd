@@ -38,10 +38,13 @@ class WhisperSpeechToTextService implements SpeechToTextService {
   Future<String?> stopRecordingAndTranscribe() async {
     final path = await _recorder.stop();
     if (path == null) return null;
+    // downloadModel no-ops once the model file is already on disk, so this
+    // is cheap on every call after the first.
+    await _controller.downloadModel(WhisperModel.base);
     final result = await _controller.transcribe(
       model: WhisperModel.base,
       audioPath: path,
-      lang: 'en',
+      lang: 'auto',
     );
     return result?.transcription.text;
   }
