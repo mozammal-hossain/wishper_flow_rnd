@@ -36,10 +36,14 @@ straight into it.
    to a temp WAV file at 16kHz mono).
 2. User taps stop. The file is handed to
    `WhisperController.transcribe(model: WhisperModel.base, audioPath: ..., lang: 'en')`.
-3. While transcribing, show a loading spinner.
+3. While transcribing, show a loading spinner. `whisper_ggml` downloads
+   and caches the model transparently inside this same call on first
+   use — it exposes no separate download-progress or cache-check API,
+   so there is no distinct "downloading" state or progress bar. The
+   first-ever call is simply slower; a one-time hint ("First use sets
+   up the speech model — this may take a bit longer") is shown under
+   the spinner until the first successful transcription completes.
 4. On success, the transcript populates an editable text field.
-5. On first-ever use, the base model isn't cached yet — show a
-   download progress indicator before the mic button is enabled.
 
 **TTS section**
 1. A separate, independent text field (not auto-filled from the
@@ -50,10 +54,10 @@ straight into it.
 
 - Mic permission denied → dialog explaining why the permission is
   needed, with a button to open app settings.
-- Model download fails (e.g. no network on first run) → show a retry
-  button in place of the progress indicator.
-- Transcription returns empty/fails → snackbar error, mic button
-  re-enabled for retry.
+- Transcription fails (including model download failure on first run,
+  e.g. no network) → snackbar error, mic button re-enabled for retry.
+- Transcription returns empty text → treated as a normal (non-error)
+  result; the transcript field is simply left empty.
 - TTS engine unavailable or language unsupported → snackbar error.
 
 ## Project structure
@@ -76,8 +80,7 @@ Platform config:
 ## Testing
 
 - Widget tests for `VoiceDemoScreen` covering UI states (idle,
-  recording, transcribing, model-downloading, error) with the two
-  services mocked.
+  recording, transcribing, error) with the two services mocked.
 - Manual, on-device testing for actual STT/TTS behavior: a real device
   or Android emulator (the iOS simulator has no mic input, so STT
   can't be manually verified there).
